@@ -29,6 +29,7 @@ class LandingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         initToolbar()
         initTimeline()
     }
@@ -57,5 +58,27 @@ class LandingFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             adapter = TimeLineAdapter(timelineList)
         }
+
+        var scrollY = 0
+        timelineRecyclerView.viewTreeObserver.addOnScrollChangedListener {
+            timelineRecyclerView?.let {
+                scrollY = it.computeVerticalScrollOffset()
+            }
+            if(scrollY > 100){
+                scrollY = 100
+            }
+            invalidateToolbarSize(scrollY)
+        }
+    }
+
+    private fun invalidateToolbarSize(progress: Int) {
+        if (progress > 100 || progress < 0) return
+
+        var viewAlpha = ((100 - progress) / 100f)
+
+        imageProfile.alpha = viewAlpha
+        textName.alpha = viewAlpha
+        textBalance.alpha = viewAlpha
+        bankRecyclerView.alpha = viewAlpha
     }
 }

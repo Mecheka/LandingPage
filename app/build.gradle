@@ -46,4 +46,7 @@ dependencies {
 
     // Material
     implementation 'com.google.android.material:material:1.0.0'
+
+    // Status bat util
+    implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 }

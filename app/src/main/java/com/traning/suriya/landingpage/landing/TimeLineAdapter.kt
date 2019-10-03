@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.traning.suriya.landingpage.R
 import com.traning.suriya.landingpage.loadResourceCircle
 import kotlinx.android.synthetic.main.item_bank.view.*
+import kotlinx.android.synthetic.main.item_bank.view.imageBank
+import kotlinx.android.synthetic.main.item_bank.view.textNumber
+import kotlinx.android.synthetic.main.item_time_line.view.*
 
 class TimeLineAdapter(private val list: List<BankAccountView>) :
     RecyclerView.Adapter<TimeLineAdapter.BankAccountHolder>() {
@@ -33,7 +36,7 @@ class TimeLineAdapter(private val list: List<BankAccountView>) :
 
             view.imageBank.loadResourceCircle(R.drawable.ic_bank)
             view.textNumber.text = model.number
-            view.textBalance.text = model.amount
+            view.itemTextBalance.text = model.amount
         }
     }
 }

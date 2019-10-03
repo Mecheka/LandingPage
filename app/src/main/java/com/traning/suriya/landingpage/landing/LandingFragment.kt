@@ -1,13 +1,18 @@
 package com.traning.suriya.landingpage.landing
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.readystatesoftware.systembartint.SystemBarTintManager
 import com.traning.suriya.landingpage.R
 import com.traning.suriya.landingpage.loadResourceCircle
 import kotlinx.android.synthetic.main.fragment_landing.*
@@ -16,6 +21,32 @@ class LandingFragment : Fragment() {
 
     companion object {
         fun newInstance() = LandingFragment()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        val statusBarManager = SystemBarTintManager(requireActivity())
+        statusBarManager.isStatusBarTintEnabled = true
+        statusBarManager.isStatusBarTintEnabled = true
+        statusBarManager.setStatusBarTintColor(Color.TRANSPARENT)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            val w = activity?.window
+            w?.setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            )
+        }
+
+        val config = statusBarManager.config
+        val parma = imageProfile.layoutParams as ConstraintLayout.LayoutParams
+        parma.setMargins(
+            0,
+            (requireContext().resources.getDimension(R.dimen.margin_16).toInt() + config.getPixelInsetTop(
+                false
+            )), 0, 0
+        )
+        imageProfile.layoutParams = parma
     }
 
     override fun onCreateView(
@@ -28,7 +59,6 @@ class LandingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         initToolbar()
         initTimeline()

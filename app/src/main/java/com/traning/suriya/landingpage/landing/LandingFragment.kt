@@ -17,12 +17,15 @@ import com.readystatesoftware.systembartint.SystemBarTintManager
 import com.traning.suriya.landingpage.R
 import com.traning.suriya.landingpage.loadResourceCircle
 import kotlinx.android.synthetic.main.fragment_landing.*
+import kotlin.math.abs
 
 class LandingFragment : Fragment() {
 
     companion object {
         fun newInstance() = LandingFragment()
     }
+
+    var offset = 0
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -78,7 +81,7 @@ class LandingFragment : Fragment() {
     }
 
     private fun initTimeline() {
-        val timelineList = List(50) {
+        val timelineList = List(100) {
             BankAccountView("083 333 3333", "1,000.00")
         }
 
@@ -104,10 +107,12 @@ class LandingFragment : Fragment() {
         var scrollY = 0
         timelineRecyclerView.viewTreeObserver.addOnScrollChangedListener {
             timelineRecyclerView?.let {
+
                 scrollY = it.computeVerticalScrollOffset()
-                Log.e("Srcoll y range :", it.computeVerticalScrollRange().toString())
-                Log.e("Scroll y extent", it.computeVerticalScrollExtent().toString())
-                Log.e("Scroll y offset", it.computeVerticalScrollOffset().toString())
+//                Log.e("Srcoll y range :", it.computeVerticalScrollRange().toString())
+//                Log.e("Scroll y extent", it.computeVerticalScrollExtent().toString())
+//                Log.e("Scroll y offset", it.computeVerticalScrollOffset().toString())
+//                Log.e("Scroll y offset", scroll.toString())
             }
 
             val minHeight = resources.getDimension(R.dimen.actionBarSize)
@@ -139,5 +144,42 @@ class LandingFragment : Fragment() {
         bankRecyclerView.alpha = viewAlpha
 
         emptyLayout.layoutParams = lp
+    }
+
+    fun offsetForVerticalScrolling(recyclerView: RecyclerView): Int {
+        val llm = recyclerView.layoutManager as LinearLayoutManager?
+
+        val position = llm!!.findFirstVisibleItemPosition()
+        val item = recyclerView.findViewHolderForAdapterPosition(position)!!.itemView
+
+        val original = resources.getDimension(R.dimen.profile_layout_size).toInt()
+        var diff = 0f
+        val netive = -item.y
+        if (netive < 0) {
+            diff = original + netive
+
+            Log.e("Netive", netive.toInt().toString())
+            Log.e("Diff", diff.toString())
+            Log.e("Original", original.toString())
+        }else{
+            diff = original + netive
+
+            Log.e("Diff", diff.toString())
+            Log.e("Netive", netive.toInt().toString())
+        }
+
+        var y = item.y.toInt()
+        if (y < 0) y *= -1
+
+        if (position == 0)
+            return y
+        else {
+            val offset = y
+            for (i in 0 until position) {
+                //Add your previous item heights to offset
+            }
+
+            return offset
+        }
     }
 }

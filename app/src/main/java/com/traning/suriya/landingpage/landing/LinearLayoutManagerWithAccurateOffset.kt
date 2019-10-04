@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+
+
 class LinearLayoutManagerWithAccurateOffset(context: Context?) : LinearLayoutManager(context) {
 
     // map of child adapter position to its height.

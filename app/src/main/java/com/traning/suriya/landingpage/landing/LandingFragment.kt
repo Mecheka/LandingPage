@@ -1,8 +1,9 @@
 package com.traning.suriya.landingpage.landing
 
 import android.graphics.Color
-import android.os.Build
+import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,13 +31,11 @@ class LandingFragment : Fragment() {
         statusBarManager.isStatusBarTintEnabled = true
         statusBarManager.isStatusBarTintEnabled = true
         statusBarManager.setStatusBarTintColor(Color.TRANSPARENT)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val w = activity?.window
-            w?.setFlags(
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-            )
-        }
+        val w = activity?.window
+        w?.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
 
         val config = statusBarManager.config
         val parma = imageProfile.layoutParams as ConstraintLayout.LayoutParams
@@ -78,13 +77,26 @@ class LandingFragment : Fragment() {
         imageProfile.loadResourceCircle(R.drawable.cherprang)
     }
 
-    private fun initTimeline(){
-        val timelineList = List(50){
+    private fun initTimeline() {
+        val timelineList = List(50) {
             BankAccountView("083 333 3333", "1,000.00")
         }
 
         timelineRecyclerView.apply {
-            addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
+            addItemDecoration(DividerItemDecoration(requireContext(), RecyclerView.VERTICAL))
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val position = parent.getChildViewHolder(view).adapterPosition
+                    if (position == 0) {
+                        outRect.top = resources.getDimension(R.dimen.profile_layout_size).toInt()
+                    }
+                }
+            })
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             adapter = TimeLineAdapter(timelineList)
         }
@@ -93,22 +105,39 @@ class LandingFragment : Fragment() {
         timelineRecyclerView.viewTreeObserver.addOnScrollChangedListener {
             timelineRecyclerView?.let {
                 scrollY = it.computeVerticalScrollOffset()
+                Log.e("Srcoll y range :", it.computeVerticalScrollRange().toString())
+                Log.e("Scroll y extent", it.computeVerticalScrollExtent().toString())
+                Log.e("Scroll y offset", it.computeVerticalScrollOffset().toString())
             }
-            if(scrollY > 100){
-                scrollY = 100
+
+            val minHeight = resources.getDimension(R.dimen.actionBarSize)
+
+            if (scrollY > minHeight) {
+//                Log.e("In Srcoll y 650 :", " In Scroll")
+                scrollY = minHeight.toInt()
             }
-            invalidateToolbarSize(scrollY)
+            invalidateToolbarSize(scrollY, minHeight)
         }
     }
 
-    private fun invalidateToolbarSize(progress: Int) {
-        if (progress > 100 || progress < 0) return
+    private fun invalidateToolbarSize(progress: Int, minHeight: Float) {
+        val precent = (progress.toFloat() / minHeight) * 100
+//        Log.e("Precent :", precent.toString())
+        if (precent > 100 || precent < 0) return
 
-        var viewAlpha = ((100 - progress) / 100f)
-
+        val viewAlpha = ((100 - precent) / 100f)
+        val lp = emptyLayout.layoutParams as ConstraintLayout.LayoutParams
+        val diff = (resources.getDimension(R.dimen.actionBarSize) * (precent) / 100f)
+        val realHeight = emptyLayout.context.resources.getDimension(R.dimen.profile_layout_size)
+        lp.height = (realHeight - diff).toInt()
+//        Log.e("diff :", diff.toString())
+//        Log.e("set height :", (realHeight - diff).toString())
+//        Log.e("Progress :", progress.toString())
         imageProfile.alpha = viewAlpha
         textName.alpha = viewAlpha
         textBalance.alpha = viewAlpha
         bankRecyclerView.alpha = viewAlpha
+
+        emptyLayout.layoutParams = lp
     }
 }

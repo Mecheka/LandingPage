@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="margin_16">16dp</dimen>
+    <dimen name="profile_layout_size">271dp</dimen>
+    <dimen name="actionBarSize">227dp</dimen>
 </resources>

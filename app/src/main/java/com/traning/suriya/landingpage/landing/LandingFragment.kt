@@ -111,7 +111,7 @@ class LandingFragment : Fragment() {
                 scrollY = it.computeVerticalScrollOffset()
 //                Log.e("Srcoll y range :", it.computeVerticalScrollRange().toString())
 //                Log.e("Scroll y extent", it.computeVerticalScrollExtent().toString())
-//                Log.e("Scroll y offset", it.computeVerticalScrollOffset().toString())
+                Log.e("Scroll y offset", it.computeVerticalScrollOffset().toString())
 //                Log.e("Scroll y offset", scroll.toString())
             }
 
@@ -121,7 +121,10 @@ class LandingFragment : Fragment() {
 //                Log.e("In Srcoll y 650 :", " In Scroll")
                 scrollY = minHeight.toInt()
             }
-            invalidateToolbarSize(scrollY, minHeight)
+            if (timelineRecyclerView.findViewHolderForAdapterPosition(0) != null){
+                Log.e("first view is:", "null")
+                invalidateToolbarSize(scrollY, minHeight)
+            }
         }
     }
 
